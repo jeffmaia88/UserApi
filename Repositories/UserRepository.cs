@@ -44,6 +44,7 @@ namespace UserApi.Repositories
         {
          
             _context.Users.Remove(entity);
+            _context.SaveChanges();
 
         }
     }

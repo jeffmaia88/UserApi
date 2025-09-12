@@ -54,9 +54,7 @@ namespace UserApi.Services
             user.Sobrenome = request.Sobrenome;
             user.Cpf = request.Cpf;
             user.Email = request.Email;
-
-
-           
+            user.Password = request.Password;
 
             _repository.Update(user);
 

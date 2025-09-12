@@ -3,11 +3,11 @@ using UserApi.Models;
 
 namespace UserApi.Models.Converters
 {
-    public class UserConverter
+    public static class UserConverter
     {
 
 
-        public UserEntity RequestToEntity(UserRequest userRequest)
+        public static UserEntity RequestToEntity(UserRequest userRequest)
         {
             var userEntity = new UserEntity();
 
@@ -21,18 +21,37 @@ namespace UserApi.Models.Converters
             return userEntity;
         }
 
-        public UserRequest EntityToRequest(UserEntity userEntity)
+        //public static UserRequest EntityToRequest(UserEntity userEntity)
+        //{
+        //    var userRequest = new UserRequest();
+
+        //    userRequest.Id = userEntity.Id;
+        //    userRequest.Nome = userEntity.Nome;
+        //    userRequest.Sobrenome = userEntity.Sobrenome;
+        //    userRequest.Cpf = userEntity.Cpf;
+        //    userRequest.Email = userEntity.Email;
+        //    userRequest.Password = userEntity.Password;
+
+        //    return userRequest;
+        //}
+
+        public static UserResponse EntityToResponse(UserEntity userEntity)
         {
-            var userRequest = new UserRequest();
+            var userResponse = new UserResponse();
 
-            userRequest.Id = userEntity.Id;
-            userRequest.Nome = userEntity.Nome;
-            userRequest.Sobrenome= userEntity.Sobrenome;
-            userRequest.Cpf = userEntity.Cpf;
-            userRequest.Email = userEntity.Email;
-            userRequest.Password = userEntity.Password;
+            userResponse.Nome = userEntity.Nome;
+            userResponse.Sobrenome = userEntity.Sobrenome;
+            userResponse.Cpf = userEntity.Cpf;
+            userResponse.Email = userEntity.Email;
+            userResponse.Data = DateTime.Now;
 
-            return userRequest;
+            return userResponse;
+
+        }
+
+        public static List<UserResponse> EntityToResponseList(List<UserEntity> userEntities)
+        {
+            return userEntities.Select(EntityToResponse).ToList();
         }
 
     }

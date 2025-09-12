@@ -6,44 +6,44 @@ namespace UserApi.Repositories
 {
     public class UserRepository
     {
-        private readonly UserDataContext _userContext;
+        private readonly UserDataContext _context;
 
         public UserRepository(UserDataContext userContext)
         {
-            _userContext = userContext;
+            _context = userContext;
         }
 
-        public void Created(UserEntity entity)
+        public void Create(UserEntity entity)
         {
-            _userContext.Add(entity);
-            _userContext.SaveChanges();
+            _context.Add(entity);
+            _context.SaveChanges();
                         
         }
 
         public List<UserEntity> GetUsers()
         {
-            return _userContext.Users.ToList();
+            return _context.Users.ToList();
             
         }
 
         public UserEntity ReadById(int id) 
         {
-            return _userContext.Users.AsNoTracking().FirstOrDefault(x=> x.Id == id);         
+            return _context.Users.AsNoTracking().FirstOrDefault(x=> x.Id == id);         
 
         }
 
-        public void Updated(UserEntity entity) 
+        public void Update(UserEntity entity) 
         {
            
-            _userContext.Users.Update(entity);
-            _userContext.SaveChanges();
+            _context.Users.Update(entity);
+            _context.SaveChanges();
 
         }
 
         public void Delete(UserEntity entity)
         {
          
-            _userContext.Users.Remove(entity);
+            _context.Users.Remove(entity);
 
         }
     }

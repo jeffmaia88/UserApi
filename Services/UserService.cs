@@ -2,6 +2,7 @@
 using UserApi.Repositories;
 using UserApi.Models;
 using UserApi.Models.Converters;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace UserApi.Services
 {
@@ -31,17 +32,20 @@ namespace UserApi.Services
             return UserConverter.EntityToResponseList(users);
         }
 
-        public UserResponse GetById(int id)
+        public UserResult<UserResponse> GetById(int id)
         {
             var user = _repository.ReadById(id);
             if (user == null)
             {
-                throw new Exception("Usuário não Encontrado");
+                return new UserResult<UserResponse>("05X01 - Usuário não encontrado");
             }
 
-            return UserConverter.EntityToResponse(user);
+            var response = UserConverter.EntityToResponse(user);
+
+            return new UserResult<UserResponse>(response);
         }
 
+      
         public UserResponse UpdateUser(int id, UserRequest request)
         {
             var user = _repository.ReadById(id);

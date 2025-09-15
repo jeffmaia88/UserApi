@@ -18,16 +18,43 @@ namespace UserApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAllUsers();
-            return Ok(users);
+            try
+            {
+                var users = _userService.GetAllUsers();
+                return Ok(new UserResult<List<UserResponse>>(users));
+
+
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<List<UserResponse>>("05X04 - Falha Interna no Servidor"));
+            }
+
 
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetById([FromRoute] int id)
         {
-            var user = _userService.GetById(id);
-            return Ok(user);
+            if (id <= 0)
+                return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
+
+            try
+            {
+                var result = _userService.GetById(id);
+                
+                if (result.Data == null)
+                    return NotFound(result);
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<UserResponse>("05X04 - Falha Interna no Servidor"));
+            }
+
+
+
         }
 
         [HttpPost]

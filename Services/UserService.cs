@@ -15,13 +15,15 @@ namespace UserApi.Services
             _repository = repository;
         }
 
-        public UserResponse CreateUser(UserRequest request)
+        public UserResult<UserResponse> CreateUser(UserRequest request)
         {
            var user = UserConverter.RequestToEntity(request);
 
             _repository.Create(user);
 
-           return UserConverter.EntityToResponse(user); 
+
+           var response = UserConverter.EntityToResponse(user); 
+           return new UserResult<UserResponse>(response);
 
         }
 
@@ -46,12 +48,12 @@ namespace UserApi.Services
         }
 
       
-        public UserResponse UpdateUser(int id, UserRequest request)
+        public UserResult<UserResponse> UpdateUser(int id, UserRequest request)
         {
             var user = _repository.ReadById(id);
             if (user == null)
             {
-                throw new Exception("Usuário não encontrado");
+                return new UserResult<UserResponse>("05X01 - Usuário não encontrado");
             }
 
             user.Nome = request.Nome;
@@ -62,19 +64,25 @@ namespace UserApi.Services
 
             _repository.Update(user);
 
-            return UserConverter.EntityToResponse(user);
+           var response = UserConverter.EntityToResponse(user);
+           return new UserResult<UserResponse>(response);
 
         }
 
-        public void DeleteUser(int id)
+        public UserResult<string> DeleteUser(int id)
         {
             var user = _repository.ReadById(id);
             if(user == null)
             {
-                throw new Exception("Usuario Nao Encontrado");
+                return new UserResult<string>("05X01 - Usuário não encontrado");
             }
 
+            var nome = user.Nome;
+
             _repository.Delete(user);
+            var mensagem = $"Usuário {nome} excluído com sucesso";
+
+            return new UserResult<string>(mensagem);
         }
 
 

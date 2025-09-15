@@ -13,7 +13,7 @@ namespace UserApi.Models
         [MinLength(3, ErrorMessage = "O Sobrenome precisa ter no mínimo 3 caracteres")]
         public string Sobrenome { get; set; }
         [Required(ErrorMessage = "O CPF é Obrigatório")]
-        [MinLength(11, ErrorMessage = "O CPF possui 11 caracteres")]
+        [MinLength(11, ErrorMessage = "O CPF precisa ter 11 caracteres")]
         public string Cpf { get; set; }
         [Required(ErrorMessage = "O Email é Obrigatório")]
         [MinLength(3, ErrorMessage = "O Email precisa ter no mínimo 3 caracteres")]

@@ -12,7 +12,7 @@ namespace UserApi.Models.Converters
         {
             var userEntity = new UserEntity();
 
-            userEntity.Id = userRequest.Id;
+            //userEntity.Id = userRequest.Id;
             userEntity.Nome = userRequest.Nome;
             userEntity.Sobrenome = userRequest.Sobrenome;
             userEntity.Cpf = userRequest.Cpf;
@@ -31,7 +31,8 @@ namespace UserApi.Models.Converters
             userResponse.Sobrenome = userEntity.Sobrenome;
             userResponse.Cpf = userEntity.Cpf;
             userResponse.Email = userEntity.Email;
-           
+            
+
             return userResponse;
 
         }

@@ -4,7 +4,7 @@ namespace UserApi.Models
 {
     public class UserRequest
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
 
         [Required(ErrorMessage = "O Nome é Obrigatório")]
         [MinLength(3, ErrorMessage = "O Nome precisa ter no mínimo 3 caracteres")]

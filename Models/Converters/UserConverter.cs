@@ -1,5 +1,6 @@
 ﻿using UserApi.Entities;
 using UserApi.Models;
+using UserApi.Services;
 
 namespace UserApi.Models.Converters
 {
@@ -15,26 +16,13 @@ namespace UserApi.Models.Converters
             userEntity.Nome = userRequest.Nome;
             userEntity.Sobrenome = userRequest.Sobrenome;
             userEntity.Cpf = userRequest.Cpf;
-            userEntity.Password = userRequest.Password;
+            userEntity.Password = PasswordService.Hash(userRequest.Password);
             userEntity.Email = userRequest.Email;
 
             return userEntity;
         }
 
-        //public static UserRequest EntityToRequest(UserEntity userEntity)
-        //{
-        //    var userRequest = new UserRequest();
-
-        //    userRequest.Id = userEntity.Id;
-        //    userRequest.Nome = userEntity.Nome;
-        //    userRequest.Sobrenome = userEntity.Sobrenome;
-        //    userRequest.Cpf = userEntity.Cpf;
-        //    userRequest.Email = userEntity.Email;
-        //    userRequest.Password = userEntity.Password;
-
-        //    return userRequest;
-        //}
-
+  
         public static UserResponse EntityToResponse(UserEntity userEntity)
         {
             var userResponse = new UserResponse();

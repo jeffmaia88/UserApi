@@ -17,6 +17,8 @@ builder.Services.AddDbContext<UserDataContext>(options => options.UseSqlServer(b
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AuthRepository>();
 
 var app = builder.Build();
 

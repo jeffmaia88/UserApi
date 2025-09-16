@@ -31,8 +31,7 @@ namespace UserApi.Models.Converters
             userResponse.Sobrenome = userEntity.Sobrenome;
             userResponse.Cpf = userEntity.Cpf;
             userResponse.Email = userEntity.Email;
-            userResponse.Data = DateTime.Now;
-
+           
             return userResponse;
 
         }

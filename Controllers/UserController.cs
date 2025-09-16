@@ -2,6 +2,7 @@
 using UserApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace UserApi.Controllers
 {
@@ -10,22 +11,34 @@ namespace UserApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly IMemoryCache _memoryCache;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, IMemoryCache memoryCache)
         {
             _userService = userService;
+            _memoryCache = memoryCache;
         }
 
+       
         [HttpGet]
         public IActionResult GetAll([FromQuery] int page = 0, [FromQuery] int pageSize = 10)
         {
+            var cacheKey = $"users_page_{page}_size_{pageSize}";
+
+
             try
             {
-                var users = _userService.GetAllUsers().OrderBy(x => x.Nome).Skip(page * pageSize).Take(pageSize).ToList();
+                var users = _memoryCache.GetOrCreate(cacheKey, entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+
+                    return _userService.GetAllUsers().OrderBy(x => x.Nome).Skip(page * pageSize).Take(pageSize).ToList();
+
+                });
+
                 return Ok(new UserResult<List<UserResponse>>(users));
-
-
             }
+
             catch
             {
                 return StatusCode(500, new UserResult<List<UserResponse>>("05X04 - Falha Interna no Servidor"));

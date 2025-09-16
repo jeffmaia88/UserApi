@@ -1,4 +1,8 @@
-﻿namespace UserApi.Models
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
+using UserApi.Models.Converters;
+
+namespace UserApi.Models
 {
     public class UserResponse
     {
@@ -6,7 +10,8 @@
         public string Sobrenome { get; set; }
         public string Cpf { get; set; }
         public string Email { get; set; }
-        public DateTime Data { get; set; }        
+
+           
 
     }
 }

@@ -17,7 +17,7 @@ namespace UserApi.Models.Converters
             userEntity.Sobrenome = userRequest.Sobrenome;
             userEntity.Cpf = userRequest.Cpf;
             userEntity.Password = PasswordService.Hash(userRequest.Password);
-            userEntity.Email = userRequest.Email;
+            userEntity.Email = userRequest.Email.Trim().ToLower();
 
             return userEntity;
         }

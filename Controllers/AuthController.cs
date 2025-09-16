@@ -19,7 +19,7 @@ namespace UserApi.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] LoginRequest loginmodel)
         {
-            var response = _authService.GetLogin(loginmodel);
+            var response = _authService.Authenticate(loginmodel);
             if (response == null)
                 return Unauthorized(new { Message = "Usuário ou senha inválidos" });
             

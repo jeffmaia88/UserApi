@@ -1,6 +1,7 @@
 ﻿using UserApi.Models;
 using UserApi.Repositories;
 using UserApi.Entities;
+using UserApi.Models.Converters;
 
 
 namespace UserApi.Services
@@ -14,7 +15,7 @@ namespace UserApi.Services
             _authRepository = repository;
         }
 
-        public LoginResponse GetLogin( LoginRequest request)
+        public LoginResponse Authenticate( LoginRequest request)
         {
             var user = _authRepository.GetByEmail(request.Email);
             if (user == null)
@@ -24,12 +25,7 @@ namespace UserApi.Services
             if (!passwordValid)
                 return null;
 
-            return new LoginResponse
-            {
-                Message = "Autenticado com sucesso",
-                Email = user.Email,
-                Nome = user.Nome
-            };
+            return LoginConverter.EntityToResponse(user, "Autenticado com Sucesso");
         }
 
     }

@@ -17,11 +17,11 @@ namespace UserApi.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAll([FromQuery] int page = 0, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var users = _userService.GetAllUsers();
+                var users = _userService.GetAllUsers().OrderBy(x => x.Nome).Skip(page * pageSize).Take(pageSize).ToList();
                 return Ok(new UserResult<List<UserResponse>>(users));
 
 

@@ -1,0 +1,39 @@
+name: user-api-docker-compose
+
+services:
+
+  user-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: user-api
+    ports:
+      - "5001:80"
+    depends_on:
+      - sqlserver
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=DbUserApi;User Id=sa;Password=Figure09LP$;TrustServerCertificate=True;
+    networks:
+      - backend
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    container_name: sqlserver
+    environment:
+      - SA_PASSWORD=Figure09LP$
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+    volumes:
+      - sql_data:/var/opt/mssql
+
+
+volumes:
+  sql_data:
+  
+networks:
+  backend:
+

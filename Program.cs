@@ -3,6 +3,8 @@ using UserApi.Data;
 using UserApi.Repositories;
 using UserApi.Services;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -28,12 +30,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<UserDataContext>();
+    db.Database.Migrate();
 }
+
+
+
+
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseHttpsRedirection();
 app.MapControllers();

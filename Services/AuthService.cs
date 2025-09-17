@@ -15,9 +15,9 @@ namespace UserApi.Services
             _authRepository = repository;
         }
 
-        public LoginResponse Authenticate( LoginRequest request)
+        public async Task<LoginResponse> Authenticate( LoginRequest request)
         {
-            var user = _authRepository.GetByEmail(request.Email);
+            var user = await _authRepository.GetByEmail(request.Email);
             if (user == null)
                 return null;
 

@@ -15,11 +15,11 @@ namespace UserApi.Services
             _repository = repository;
         }
 
-        public UserResult<UserResponse> CreateUser(UserRequest request)
+        public async Task<UserResult<UserResponse>> CreateUser(UserRequest request)
         {
            var user = UserConverter.RequestToEntity(request);
 
-            _repository.Create(user);
+            await _repository.Create(user);
 
 
            var response = UserConverter.EntityToResponse(user); 
@@ -27,16 +27,16 @@ namespace UserApi.Services
 
         }
 
-        public List<UserResponse> GetAllUsers()
+        public async Task<List<UserResponse>> GetAllUsers()
         {
-            var users = _repository.GetUsers();
+            var users = await _repository.GetUsers();
             
             return UserConverter.EntityToResponseList(users);
         }
 
-        public UserResult<UserResponse> GetById(int id)
+        public async Task <UserResult<UserResponse>> GetById(int id)
         {
-            var user = _repository.ReadById(id);
+            var user = await _repository.ReadById(id);
             if (user == null)
             {
                 return new UserResult<UserResponse>("05X01 - Usuário não encontrado");
@@ -48,9 +48,9 @@ namespace UserApi.Services
         }
 
       
-        public UserResult<UserResponse> UpdateUser(int id, UserRequest request)
+        public async Task <UserResult<UserResponse>> UpdateUser(int id, UserRequest request)
         {
-            var user = _repository.ReadById(id);
+            var user = await _repository.ReadById(id);
             if (user == null)
             {
                 return new UserResult<UserResponse>("05X01 - Usuário não encontrado");
@@ -62,16 +62,16 @@ namespace UserApi.Services
             user.Email = request.Email;
             user.Password = request.Password;
 
-            _repository.Update(user);
+            await _repository.Update(user);
 
            var response = UserConverter.EntityToResponse(user);
            return new UserResult<UserResponse>(response);
 
         }
 
-        public UserResult<string> DeleteUser(int id)
+        public async Task <UserResult<string>> DeleteUser(int id)
         {
-            var user = _repository.ReadById(id);
+            var user = await _repository.ReadById(id);
             if(user == null)
             {
                 return new UserResult<string>("05X01 - Usuário não encontrado");
@@ -79,7 +79,7 @@ namespace UserApi.Services
 
             var nome = user.Nome;
 
-            _repository.Delete(user);
+            await _repository.Delete(user);
             var mensagem = $"Usuário {nome} excluído com sucesso";
 
             return new UserResult<string>(mensagem);

@@ -15,9 +15,9 @@ namespace UserApi.Repositories
             _context = context;
         }
 
-        public UserEntity GetByEmail(string email)
+        public async Task<UserEntity> GetByEmail(string email)
         {
-            return _context.Users.AsNoTracking().FirstOrDefault(x => x.Email == email);
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Email == email);
         }
 
     }

@@ -13,38 +13,38 @@ namespace UserApi.Repositories
             _context = userContext;
         }
 
-        public void Create(UserEntity entity)
+        public async Task Create(UserEntity entity)
         {
-            _context.Add(entity);
-            _context.SaveChanges();
+           await _context.AddAsync(entity);
+           await _context.SaveChangesAsync();
                         
         }
 
-        public List<UserEntity> GetUsers()
+        public async Task<List<UserEntity>> GetUsers()
         {
-            return _context.Users.ToList();
+            return await _context.Users.ToListAsync();
             
         }
 
-        public UserEntity ReadById(int id) 
+        public async Task <UserEntity> ReadById(int id) 
         {
-            return _context.Users.AsNoTracking().FirstOrDefault(x=> x.Id == id);         
+            return await _context.Users.AsNoTracking().FirstOrDefaultAsync(x=> x.Id == id);         
 
         }
 
-        public void Update(UserEntity entity) 
+        public async Task Update(UserEntity entity) 
         {
            
             _context.Users.Update(entity);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
 
         }
 
-        public void Delete(UserEntity entity)
+        public async Task Delete(UserEntity entity)
         {
          
             _context.Users.Remove(entity);
-            _context.SaveChanges();
+           await _context.SaveChangesAsync();
 
         }
     }

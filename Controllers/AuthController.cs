@@ -17,9 +17,9 @@ namespace UserApi.Controllers
 
 
         [HttpPost]
-        public IActionResult Login([FromBody] LoginRequest loginmodel)
+        public async Task<IActionResult> Login([FromBody] LoginRequest loginmodel)
         {
-            var response = _authService.Authenticate(loginmodel);
+            var response = await _authService.Authenticate(loginmodel);
             if (response == null)
                 return Unauthorized(new { Message = "Usuário ou senha inválidos" });
             

@@ -5,8 +5,11 @@ using UserApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+
+
+
+builder.Services.AddMemoryCache();
 builder.Services.AddOpenApi();
 builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
 {
@@ -17,9 +20,20 @@ builder.Services.AddDbContext<UserDataContext>(options => options.UseSqlServer(b
 
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<AuthRepository>();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 app.MapControllers();

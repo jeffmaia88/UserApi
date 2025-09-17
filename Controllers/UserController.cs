@@ -2,6 +2,7 @@
 using UserApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using UserApi.Extensions;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace UserApi.Controllers
 {
@@ -10,22 +11,35 @@ namespace UserApi.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
+        private readonly IMemoryCache _memoryCache;
 
-        public UserController(UserService userService)
+        public UserController(UserService userService, IMemoryCache memoryCache)
         {
             _userService = userService;
+            _memoryCache = memoryCache;
         }
 
+       
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] int page = 0, [FromQuery] int pageSize = 10)
         {
+            var cacheKey = $"users_page_{page}_size_{pageSize}";
+
+
             try
             {
-                var users = _userService.GetAllUsers();
+                var users = await _memoryCache.GetOrCreateAsync(cacheKey, async entry =>
+                {
+                    entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(1);
+
+                    var allUsers = await _userService.GetAllUsers();
+                    return  allUsers.OrderBy(x => x.Nome).Skip(page * pageSize).Take(pageSize).ToList();
+
+                });
+
                 return Ok(new UserResult<List<UserResponse>>(users));
-
-
             }
+
             catch
             {
                 return StatusCode(500, new UserResult<List<UserResponse>>("05X04 - Falha Interna no Servidor"));
@@ -35,14 +49,14 @@ namespace UserApi.Controllers
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetById([FromRoute] int id)
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
             if (id <= 0)
                 return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
 
             try
             {
-                var result = _userService.GetById(id);
+                var result = await _userService.GetById(id);
                 
                 if (result.Data == null)
                     return NotFound(result);
@@ -59,14 +73,14 @@ namespace UserApi.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUser([FromBody] UserRequest user )
+        public async Task<IActionResult> CreateUser([FromBody] UserRequest user )
         {
             if(!ModelState.IsValid)
                 return BadRequest( new UserResult<UserResponse>(ModelState.GetErrors()));
 
             try
             {
-                var response = _userService.CreateUser(user);
+                var response = await _userService.CreateUser(user);
                 return Ok(new UserResult<UserResponse>(response.Data));
             }
             catch
@@ -77,7 +91,7 @@ namespace UserApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult UpdateUser([FromRoute] int id, [FromBody] UserRequest user)
+        public async Task<IActionResult> UpdateUser([FromRoute] int id, [FromBody] UserRequest user)
         {
             if (id <= 0)
                 return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
@@ -86,7 +100,7 @@ namespace UserApi.Controllers
                 return BadRequest(new UserResult<UserResponse>(ModelState.GetErrors()));
             try
             {
-                var response = _userService.UpdateUser(id, user);
+                var response = await _userService.UpdateUser(id, user);
                 return Ok(response);
             }
             catch
@@ -97,14 +111,14 @@ namespace UserApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteUser([FromRoute] int id)
+        public async Task<IActionResult> DeleteUser([FromRoute] int id)
         {
             if (id<= 0)
                 return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
 
             try
             {
-                var response = _userService.DeleteUser(id);
+                var response = await _userService.DeleteUser(id);
 
                 return Ok(response);
             }

@@ -1,5 +1,6 @@
 ﻿using UserApi.Entities;
 using UserApi.Models;
+using UserApi.Services;
 
 namespace UserApi.Models.Converters
 {
@@ -11,30 +12,17 @@ namespace UserApi.Models.Converters
         {
             var userEntity = new UserEntity();
 
-            userEntity.Id = userRequest.Id;
+            //userEntity.Id = userRequest.Id;
             userEntity.Nome = userRequest.Nome;
             userEntity.Sobrenome = userRequest.Sobrenome;
             userEntity.Cpf = userRequest.Cpf;
-            userEntity.Password = userRequest.Password;
-            userEntity.Email = userRequest.Email;
+            userEntity.Password = PasswordService.Hash(userRequest.Password);
+            userEntity.Email = userRequest.Email.Trim().ToLower();
 
             return userEntity;
         }
 
-        //public static UserRequest EntityToRequest(UserEntity userEntity)
-        //{
-        //    var userRequest = new UserRequest();
-
-        //    userRequest.Id = userEntity.Id;
-        //    userRequest.Nome = userEntity.Nome;
-        //    userRequest.Sobrenome = userEntity.Sobrenome;
-        //    userRequest.Cpf = userEntity.Cpf;
-        //    userRequest.Email = userEntity.Email;
-        //    userRequest.Password = userEntity.Password;
-
-        //    return userRequest;
-        //}
-
+  
         public static UserResponse EntityToResponse(UserEntity userEntity)
         {
             var userResponse = new UserResponse();
@@ -43,7 +31,7 @@ namespace UserApi.Models.Converters
             userResponse.Sobrenome = userEntity.Sobrenome;
             userResponse.Cpf = userEntity.Cpf;
             userResponse.Email = userEntity.Email;
-            userResponse.Data = DateTime.Now;
+            
 
             return userResponse;
 

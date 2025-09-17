@@ -1,6 +1,7 @@
 ﻿using UserApi.Services;
 using UserApi.Models;
 using Microsoft.AspNetCore.Mvc;
+using UserApi.Extensions;
 
 namespace UserApi.Controllers
 {
@@ -18,37 +19,99 @@ namespace UserApi.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var users = _userService.GetAllUsers();
-            return Ok(users);
+            try
+            {
+                var users = _userService.GetAllUsers();
+                return Ok(new UserResult<List<UserResponse>>(users));
+
+
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<List<UserResponse>>("05X04 - Falha Interna no Servidor"));
+            }
+
 
         }
 
         [HttpGet("{id:int}")]
         public IActionResult GetById([FromRoute] int id)
         {
-            var user = _userService.GetById(id);
-            return Ok(user);
+            if (id <= 0)
+                return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
+
+            try
+            {
+                var result = _userService.GetById(id);
+                
+                if (result.Data == null)
+                    return NotFound(result);
+
+                return Ok(result);
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<UserResponse>("05X04 - Falha Interna no Servidor"));
+            }
+
+
+
         }
 
         [HttpPost]
         public IActionResult CreateUser([FromBody] UserRequest user )
         {
-            var response = _userService.CreateUser(user);
-            return Ok(response);
+            if(!ModelState.IsValid)
+                return BadRequest( new UserResult<UserResponse>(ModelState.GetErrors()));
+
+            try
+            {
+                var response = _userService.CreateUser(user);
+                return Ok(new UserResult<UserResponse>(response.Data));
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<UserResponse>("05X04 - Falha Interna no Servidor"));
+            }
+            
         }
 
         [HttpPut("{id:int}")]
         public IActionResult UpdateUser([FromRoute] int id, [FromBody] UserRequest user)
         {
-            var response = _userService.UpdateUser(id, user);
-            return Ok(response);
+            if (id <= 0)
+                return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
+
+            if (!ModelState.IsValid)
+                return BadRequest(new UserResult<UserResponse>(ModelState.GetErrors()));
+            try
+            {
+                var response = _userService.UpdateUser(id, user);
+                return Ok(response);
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<UserResponse>("05X04 - Falha Interna no Servidor"));
+            }
+            
         }
 
         [HttpDelete("{id:int}")]
         public IActionResult DeleteUser([FromRoute] int id)
         {
-            _userService.DeleteUser(id);
-            return Ok();
+            if (id<= 0)
+                return BadRequest(new UserResult<UserResponse>("05X02 - ID inválido"));
+
+            try
+            {
+                var response = _userService.DeleteUser(id);
+
+                return Ok(response);
+            }
+            catch
+            {
+                return StatusCode(500, new UserResult<UserResponse>("05X04 - Falha Interna no Servidor"));
+            }            
 
         }
 
